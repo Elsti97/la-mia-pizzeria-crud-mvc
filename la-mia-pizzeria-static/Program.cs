@@ -3,6 +3,7 @@ using la_mia_pizzeria_static.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,15 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.Use(async (context, next) =>
+{
+    var customCulture = new CultureInfo("en-US");
+    customCulture.NumberFormat.NumberDecimalSeparator = ".";
+    Thread.CurrentThread.CurrentCulture = customCulture;
+
+    await next.Invoke();
+});
 
 app.MapControllerRoute(
     name: "default",
