@@ -1,12 +1,13 @@
 ﻿@model Pizza
 
 @{
-    ViewData["Title"] = "Crea nuova pizza";
+    ViewData["Title"] = "Modifica pizza";
+    var pizza = Model;
 }
 
-<h2>Crea nuova pizza</h2>
+<h2>Modifica pizza</h2>
 
-<form asp-action="Create" method="post" asp-controller="Pizza">
+<form method="post" asp-action="Update" asp-controller="Pizza" asp-route-id="@pizza.Id">
     @Html.AntiForgeryToken()
     <div class="form-group">
         <label asp-for="Nome">Nome:</label>
@@ -27,7 +28,7 @@
     </div>
 
     <div class="text-center my-3">
-        <button type="submit" class="btn btn-primary">Crea</button>
+        <button type="submit" class="btn btn-primary">Modifica</button>
     </div>
 </form>
 

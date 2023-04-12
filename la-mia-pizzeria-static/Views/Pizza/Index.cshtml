@@ -36,6 +36,7 @@ else
                     </td>
                     <td>@pizza.Descrizione</td>
                     <td>@pizza.Prezzo €</td>
+                    <td><a href="@Url.Action("Update", "Pizza", new { Id = pizza.Id })">Modifica</a></td>
                 </tr>
             }
         </tbody>
