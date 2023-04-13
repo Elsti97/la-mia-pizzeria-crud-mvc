@@ -9,6 +9,7 @@ public class PizzeriaContext : DbContext
     public PizzeriaContext(DbContextOptions<PizzeriaContext> options) : base(options) { }
 
     public DbSet<Pizza> Pizzas { get; set; }
+    public DbSet<Category> Categories { get; set; }
 
     public void Seed()
     {
@@ -31,6 +32,21 @@ public class PizzeriaContext : DbContext
             };
 
             Pizzas.AddRange(seed);
+
+            SaveChanges();
+        }
+
+        if (!Categories.Any())
+        {
+            var seedCategories = new Category[]
+            {
+            new Category { Name = "Classiche" },
+            new Category { Name = "Bianche" },
+            new Category { Name = "Vegetariane" },
+            new Category { Name = "Di Mare" },
+            };
+
+            Categories.AddRange(seedCategories);
 
             SaveChanges();
         }

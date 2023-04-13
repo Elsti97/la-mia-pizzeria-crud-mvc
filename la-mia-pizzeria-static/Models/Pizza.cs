@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using la_mia_pizzeria_static.Attributes;
+using System.ComponentModel;
 
 namespace la_mia_pizzeria_static.Models
 {
@@ -21,6 +22,9 @@ namespace la_mia_pizzeria_static.Models
         [Required(ErrorMessage = "Il campo Prezzo è obbligatorio")]
         [Range(0.01, 999.99, ErrorMessage = "Il prezzo deve essere maggiore di zero")]
         public decimal? Prezzo { get; set; }
+
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
     }
 }
 
