@@ -24,5 +24,18 @@
             <th>Prezzo</th>
             <td>@Model.Prezzo €</td>
         </tr>
+        <tr>
+            <th>Categoria</th>
+            <td>
+                @if (Model.Category != null)
+                {
+                    @Model.Category.Name
+                }
+                else
+                {
+                    <span>Nessuna Categoria</span>
+                }
+            </td>
+        </tr>
     </tbody>
 </table>

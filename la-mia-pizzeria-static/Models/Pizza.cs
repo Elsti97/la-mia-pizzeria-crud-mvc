@@ -23,6 +23,7 @@ namespace la_mia_pizzeria_static.Models
         [Range(0.01, 999.99, ErrorMessage = "Il prezzo deve essere maggiore di zero")]
         public decimal? Prezzo { get; set; }
 
+        [Required(ErrorMessage = "Seleziona una categoria")]
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
     }

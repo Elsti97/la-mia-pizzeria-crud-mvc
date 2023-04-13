@@ -19,15 +19,18 @@ namespace la_mia_pizzeria_static.Controllers
 
         public IActionResult Index()
         {
-            var pizzas = _context.Pizzas.ToArray();
+            var pizzas = _context.Pizzas
+                .Include(p => p.Category)
+                .DefaultIfEmpty()
+                .ToArray();
 
             return View(pizzas);
-            
+
         }
 
         public IActionResult Detail(int id)
         {
-            var pizza = _context.Pizzas.SingleOrDefault(p => p.Id == id);
+            var pizza = _context.Pizzas.Include(p => p.Category).DefaultIfEmpty().SingleOrDefault(p => p.Id == id);
 
             if (pizza is null)
             {
@@ -39,20 +42,25 @@ namespace la_mia_pizzeria_static.Controllers
 
         public IActionResult Create()
         {
+            var pizzaFormModel = new PizzaFormModel
+            {
+                Categories = _context.Categories.ToList(),
+            };
 
-            return View();
+            return View(pizzaFormModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Pizza pizza)
+        public IActionResult Create(PizzaFormModel pizzaFormModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(pizza);
+                pizzaFormModel.Categories = _context.Categories.ToList();
+                return View(pizzaFormModel);
             }
 
-            _context.Pizzas.Add(pizza);
+            _context.Pizzas.Add(pizzaFormModel.Pizza);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
@@ -60,36 +68,45 @@ namespace la_mia_pizzeria_static.Controllers
 
         public IActionResult Update(int id)
         {
-            var pizza = _context.Pizzas.FirstOrDefault(p => p.Id == id);
+            var pizza = _context.Pizzas.Include(p => p.Category).DefaultIfEmpty().SingleOrDefault(p => p.Id == id);
 
             if (pizza is null)
             {
                 return View("NotFound");
             }
 
-            return View(pizza);
+            var pizzaFormModel = new PizzaFormModel
+            {
+                Pizza = pizza,
+                Categories = _context.Categories.ToList()
+            };
+
+            return View(pizzaFormModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(int id, Pizza pizza)
+        public IActionResult Update(int id, PizzaFormModel pizzaFormModel)
         {
             if (!ModelState.IsValid)
             {
-                return View(pizza);
+                pizzaFormModel.Categories = _context.Categories.ToList();
+                return View(pizzaFormModel);
             }
 
-            var PizzaUpdate = _context.Pizzas.FirstOrDefault(p => p.Id == pizza.Id);
+            var pizzaUpdate = _context.Pizzas.FirstOrDefault(p => p.Id == id);
 
-            if (PizzaUpdate is null)
+            if (pizzaUpdate is null)
             {
                 return View("NotFound");
             }
 
-            PizzaUpdate.Nome = pizza.Nome;
-            PizzaUpdate.Descrizione = pizza.Descrizione;
-            PizzaUpdate.Prezzo = pizza.Prezzo;
+            pizzaUpdate.Nome = pizzaFormModel.Pizza.Nome;
+            pizzaUpdate.Descrizione = pizzaFormModel.Pizza.Descrizione;
+            pizzaUpdate.Prezzo = pizzaFormModel.Pizza.Prezzo;
+            pizzaUpdate.CategoryId = pizzaFormModel.Pizza.CategoryId;
 
+            _context.Pizzas.Update(pizzaUpdate);
             _context.SaveChanges();
 
             return RedirectToAction("Index");
@@ -110,6 +127,11 @@ namespace la_mia_pizzeria_static.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
