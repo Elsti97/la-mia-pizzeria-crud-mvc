@@ -37,5 +37,16 @@
                 }
             </td>
         </tr>
+        <tr>
+            <th>Ingredienti</th>
+            <td>
+                @foreach (Ingredient ingredient in Model.Ingredients ?? Enumerable.Empty<Ingredient>())
+                {
+                    <div>
+                        <label>@ingredient.Name</label>
+                    </div>
+                }
+            </td>
+        </tr>
     </tbody>
 </table>

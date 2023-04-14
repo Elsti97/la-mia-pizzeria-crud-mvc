@@ -3,6 +3,7 @@ using la_mia_pizzeria_static.Models;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace la_mia_pizzeria_static.Controllers
 {
@@ -30,7 +31,7 @@ namespace la_mia_pizzeria_static.Controllers
 
         public IActionResult Detail(int id)
         {
-            var pizza = _context.Pizzas.Include(p => p.Category).DefaultIfEmpty().SingleOrDefault(p => p.Id == id);
+            var pizza = _context.Pizzas.Include(p => p.Ingredients).Include(p => p.Category).DefaultIfEmpty().SingleOrDefault(p => p.Id == id);
 
             if (pizza is null)
             {
@@ -45,6 +46,7 @@ namespace la_mia_pizzeria_static.Controllers
             var pizzaFormModel = new PizzaFormModel
             {
                 Categories = _context.Categories.ToList(),
+                Ingredients = _context.Ingredients.Select(i => new SelectListItem(i.Name, i.Id.ToString())).ToList(),
             };
 
             return View(pizzaFormModel);
@@ -57,8 +59,12 @@ namespace la_mia_pizzeria_static.Controllers
             if (!ModelState.IsValid)
             {
                 pizzaFormModel.Categories = _context.Categories.ToList();
+                pizzaFormModel.Ingredients = _context.Ingredients.Select(i => new SelectListItem(i.Name, i.Id.ToString())).ToList();
+
                 return View(pizzaFormModel);
             }
+
+            pizzaFormModel.Pizza.Ingredients = pizzaFormModel.SelectedIngredients?.Select(si => _context.Ingredients.First(i => i.Id == Convert.ToInt32(si))).ToList();
 
             _context.Pizzas.Add(pizzaFormModel.Pizza);
             _context.SaveChanges();
@@ -68,18 +74,21 @@ namespace la_mia_pizzeria_static.Controllers
 
         public IActionResult Update(int id)
         {
-            var pizza = _context.Pizzas.Include(p => p.Category).DefaultIfEmpty().SingleOrDefault(p => p.Id == id);
+            var pizza = _context.Pizzas.Include(p => p.Ingredients).Include(p => p.Category).DefaultIfEmpty().SingleOrDefault(p => p.Id == id);
 
             if (pizza is null)
             {
-                return View("NotFound");
+                return View($"Pizza numero: {id} non trovata");
             }
 
             var pizzaFormModel = new PizzaFormModel
             {
                 Pizza = pizza,
-                Categories = _context.Categories.ToList()
+                Categories = _context.Categories.ToList(),
+                Ingredients = _context.Ingredients.ToList().Select(i => new SelectListItem(i.Name, i.Id.ToString(), pizza.Ingredients!.Any(_i => _i.Id == i.Id))).ToList(),
             };
+
+            pizzaFormModel.SelectedIngredients = pizzaFormModel.Ingredients.Where(i => i.Selected).Select(i => i.Value).ToList();
 
             return View(pizzaFormModel);
         }
@@ -91,20 +100,23 @@ namespace la_mia_pizzeria_static.Controllers
             if (!ModelState.IsValid)
             {
                 pizzaFormModel.Categories = _context.Categories.ToList();
+                pizzaFormModel.Ingredients = _context.Ingredients.ToList().Select(i => new SelectListItem(i.Name, i.Id.ToString())).ToList();
+
                 return View(pizzaFormModel);
             }
 
-            var pizzaUpdate = _context.Pizzas.FirstOrDefault(p => p.Id == id);
+            var pizzaUpdate = _context.Pizzas.Include(p => p.Ingredients).FirstOrDefault(p => p.Id == id);
 
             if (pizzaUpdate is null)
             {
-                return View("NotFound");
+                return View($"Pizza numero: {id} non trovata");
             }
 
             pizzaUpdate.Nome = pizzaFormModel.Pizza.Nome;
             pizzaUpdate.Descrizione = pizzaFormModel.Pizza.Descrizione;
             pizzaUpdate.Prezzo = pizzaFormModel.Pizza.Prezzo;
             pizzaUpdate.CategoryId = pizzaFormModel.Pizza.CategoryId;
+            pizzaUpdate.Ingredients = pizzaFormModel.SelectedIngredients?.Select(si => _context.Ingredients.First(i => i.Id == Convert.ToInt32(si))).ToList();
 
             _context.Pizzas.Update(pizzaUpdate);
             _context.SaveChanges();

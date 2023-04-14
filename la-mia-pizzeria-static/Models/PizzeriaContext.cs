@@ -10,9 +10,31 @@ public class PizzeriaContext : DbContext
 
     public DbSet<Pizza> Pizzas { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Ingredient> Ingredients { get; set; }
 
     public void Seed()
     {
+        if (!Ingredients.Any())
+        {
+            var seedIngredients = new Ingredient[]
+            {
+            new Ingredient { Name = "Pomodoro" },
+            new Ingredient { Name = "Mozzarella" },
+            new Ingredient { Name = "Prosciutto crudo" },
+            new Ingredient { Name = "Prosciutto cotto" },
+            new Ingredient { Name = "Funghi" },
+            new Ingredient { Name = "Salame" },
+            new Ingredient { Name = "Rucola" },
+            new Ingredient { Name = "Salsiccia" },
+            new Ingredient { Name = "Wustel" },
+            new Ingredient { Name = "Patatine" },
+            };
+
+            Ingredients.AddRange(seedIngredients);
+
+            SaveChanges();
+        }
+
         if (!Categories.Any())
         {
             var seedCategories = new Category[]
