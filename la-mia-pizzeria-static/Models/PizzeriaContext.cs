@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using la_mia_pizzeria_static.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 
 
-public class PizzeriaContext : DbContext
+public class PizzeriaContext : IdentityDbContext<IdentityUser>
 {
 
     public PizzeriaContext(DbContextOptions<PizzeriaContext> options) : base(options) { }
