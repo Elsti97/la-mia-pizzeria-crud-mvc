@@ -7,17 +7,15 @@ using System.Globalization;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("PizzeriaContextConnection") ?? throw new InvalidOperationException("Connection string 'PizzeriaContextConnection' not found.");
 
-builder.Services.AddDbContext<PizzeriaContext>(options =>
-    options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<PizzeriaContext>();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<PizzeriaContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSqlServer<PizzeriaContext>("Data Source=localhost;Initial Catalog=db-pizzeria;Integrated Security=True;TrustServerCertificate=True");
 
 
 var app = builder.Build();
@@ -51,6 +49,8 @@ app.Use(async (context, next) =>
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Pizza}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 
 

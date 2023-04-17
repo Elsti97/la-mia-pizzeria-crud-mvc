@@ -10,6 +10,11 @@ public class PizzeriaContext : IdentityDbContext<IdentityUser>
 
     public PizzeriaContext(DbContextOptions<PizzeriaContext> options) : base(options) { }
 
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer("Data Source=localhost;Initial Catalog=db-pizzeria;Integrated Security=True;TrustServerCertificate=True;");
+    }
+
     public DbSet<Pizza> Pizzas { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Ingredient> Ingredients { get; set; }
@@ -76,5 +81,44 @@ public class PizzeriaContext : IdentityDbContext<IdentityUser>
 
             SaveChanges();
         }
+
+        if (!Roles.Any())
+        {
+            var seed = new IdentityRole[]
+            {
+                    new("Admin"),
+                    new("User")
+            };
+
+            Roles.AddRange(seed);
+        }
+
+    //    if (Users.Any(u => u.Email == "pippo@gmail.com" || u.Email == "mario@gmail.com")
+    //&& !UserRoles.Any())
+    //    {
+    //        var admin = Users.First(u => u.Email == "pippo@gmail.com");
+    //        var user = Users.First(u => u.Email == "mario@gmail.com");
+
+    //        var adminRole = Roles.First(r => r.Name == "Admin");
+    //        var userRole = Roles.First(r => r.Name == "User");
+
+    //        var seed = new IdentityUserRole<string>[]
+    //        {
+    //                new()
+    //                {
+    //                    UserId = admin.Id,
+    //                    RoleId = adminRole.Id
+    //                },
+    //                new()
+    //                {
+    //                    UserId = user.Id,
+    //                    RoleId = userRole.Id
+    //                }
+    //        };
+
+    //        UserRoles.AddRange(seed);
+    //    }
+
+        SaveChanges();
     }
 }

@@ -4,9 +4,12 @@ using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace la_mia_pizzeria_static.Controllers
 {
+    [Authorize (Roles = "ADMIN, USER")]
     public class PizzaController : Controller
     {
         private readonly ILogger<PizzaController> _logger;
@@ -41,6 +44,7 @@ namespace la_mia_pizzeria_static.Controllers
             return View(pizza);
         }
 
+        [Authorize(Roles = "ADMIN")]
         public IActionResult Create()
         {
             var pizzaFormModel = new PizzaFormModel
@@ -72,6 +76,7 @@ namespace la_mia_pizzeria_static.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "ADMIN")]
         public IActionResult Update(int id)
         {
             var pizza = _context.Pizzas.Include(p => p.Ingredients).Include(p => p.Category).DefaultIfEmpty().SingleOrDefault(p => p.Id == id);
@@ -124,6 +129,7 @@ namespace la_mia_pizzeria_static.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "ADMIN")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
