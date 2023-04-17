@@ -25,9 +25,10 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Pizza" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
+                        @*<li class="nav-item">
                             <a class="nav-link" aria-current="page" href="@Url.Action("Index", "User")">Admin</a>
-                        </li>
+                        </li>*@
+                        @await Html.PartialAsync("_LoginPartial")
                     </ul>
                 </div>
             </div>
@@ -41,7 +42,7 @@
 
     <footer class="border-top footer text-muted py-3 fixed-bottom">
         <div class="container d-flex justify-content-between">
-            &copy; 2023 - Best_pizzeria_mamma_mia <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2023 - Best_pizzeria_mamma_mia <a asp-area="" asp-controller="Pizza" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

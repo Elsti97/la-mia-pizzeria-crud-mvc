@@ -9,7 +9,7 @@ using System.Data;
 
 namespace la_mia_pizzeria_static.Controllers
 {
-    [Authorize (Roles = "ADMIN, USER")]
+    [Authorize (Roles = "Admin,User")]
     public class PizzaController : Controller
     {
         private readonly ILogger<PizzaController> _logger;
@@ -44,7 +44,7 @@ namespace la_mia_pizzeria_static.Controllers
             return View(pizza);
         }
 
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             var pizzaFormModel = new PizzaFormModel
@@ -76,7 +76,7 @@ namespace la_mia_pizzeria_static.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Update(int id)
         {
             var pizza = _context.Pizzas.Include(p => p.Ingredients).Include(p => p.Category).DefaultIfEmpty().SingleOrDefault(p => p.Id == id);
@@ -129,7 +129,7 @@ namespace la_mia_pizzeria_static.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)

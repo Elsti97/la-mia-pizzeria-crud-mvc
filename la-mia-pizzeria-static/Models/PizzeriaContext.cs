@@ -93,31 +93,30 @@ public class PizzeriaContext : IdentityDbContext<IdentityUser>
             Roles.AddRange(seed);
         }
 
-    //    if (Users.Any(u => u.Email == "pippo@gmail.com" || u.Email == "mario@gmail.com")
-    //&& !UserRoles.Any())
-    //    {
-    //        var admin = Users.First(u => u.Email == "pippo@gmail.com");
-    //        var user = Users.First(u => u.Email == "mario@gmail.com");
+        if (Users.Any(u => u.Email == "pippo@gmail.com" || u.Email == "mario@gmail.com") && !UserRoles.Any())
+        {
+            var admin = Users.First(u => u.Email == "pippo@gmail.com");
+            var user = Users.First(u => u.Email == "mario@gmail.com");
 
-    //        var adminRole = Roles.First(r => r.Name == "Admin");
-    //        var userRole = Roles.First(r => r.Name == "User");
+            var adminRole = Roles.First(r => r.Name == "Admin");
+            var userRole = Roles.First(r => r.Name == "User");
 
-    //        var seed = new IdentityUserRole<string>[]
-    //        {
-    //                new()
-    //                {
-    //                    UserId = admin.Id,
-    //                    RoleId = adminRole.Id
-    //                },
-    //                new()
-    //                {
-    //                    UserId = user.Id,
-    //                    RoleId = userRole.Id
-    //                }
-    //        };
+            var seed = new IdentityUserRole<string>[]
+            {
+                    new()
+                    {
+                        UserId = admin.Id,
+                        RoleId = adminRole.Id
+                    },
+                    new()
+                    {
+                        UserId = user.Id,
+                        RoleId = userRole.Id
+                    }
+            };
 
-    //        UserRoles.AddRange(seed);
-    //    }
+            UserRoles.AddRange(seed);
+        }
 
         SaveChanges();
     }
